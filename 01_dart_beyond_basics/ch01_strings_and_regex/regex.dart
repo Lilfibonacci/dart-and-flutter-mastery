@@ -480,5 +480,185 @@ void main(List<String> args) {
   if (!password.contains(goodLength)) {
     print('Your password must be at least 12 characters long!');
   }
+
+  // استخراج متن:
+  // Extracting Text
+  // در بخش‌های قبل از
+  // regex
+  // برای اعتبارسنجی استفاده کردیم.
+  // اما عبارات منظم برای پیدا کردن و استخراج بخش‌های خاصی از یک متن طولانی نیز بسیار کاربردی هستند.
+
+  // ۱. استخراج دستی متن با متدهای رشته:
+  // فرض کنید یک متن شامل تگ‌های
+  // HTML
+  // دارید و می‌خواهید متن داخل تگ:
+  // <h1>
+  // را استخراج کنید:
+
+  const htmlText = '''
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Dart Tutorial</h1>
+<p>Dart is my favorite language.</p>
+</body>
+</html>
+''';
+
+  // روش دستی با استفاده از:
+  // indexOf()
+  // و:
+  // substring()
+
+  // پیدا کردن محل شروع متن داخل تگ:
+  final headingStart = htmlText.indexOf('<h1>') + '<h1>'.length;
+
+  // پیدا کردن محل پایان متن داخل تگ:
+  final headingEnd = htmlText.indexOf('</h1>');
+
+  // استخراج متن بین دو شاخص:
+  final heading = htmlText.substring(headingStart, headingEnd);
+  print(heading);
+  // خروجی:
+  // Dart Tutorial
+
+  // این روش دستی در صورتی که چندین تگ وجود داشته باشد
+  // یا ساختار متن کمی تغییر کند بسیار شکننده خواهد بود.
+
+  // ۲. استخراج متن با عبارات منظم و گروه‌ها:
+  // Regex Groups
+  // برای استخراج بخش مشخصی از الگو، آن بخش را درون پرانتز:
+  // ()
+  // قرار می‌دهیم که به آن یک گروه تطبیق یا:
+  // Capture Group
+  // می‌گویند:
+
+  final headings = RegExp(r'<h1>(.+)</h1>');
+
+  // متد:
+  // allMatches()
+  // تمام نمونه‌های مطابق با الگو را در کل متن برمی‌گرداند:
+  final matches = headings.allMatches(htmlText);
+
+  for (final match in matches) {
+    // متد:
+    // group(0)
+    // کل عبارت منطبق (شامل تگ‌های باز و بسته) را برمی‌گرداند:
+    print(match.group(0));
+    // خروجی:
+    // <h1>Dart Tutorial</h1>
+
+    // متد:
+    // group(1)
+    // متن استخراج‌شده درون اولین جفت پرانتز یعنی:
+    // (.+)
+    // را برمی‌گرداند:
+    print(match.group(1));
+    // خروجی:
+    // Dart Tutorial
+  }
+
+  // تطبیق حریصانه در برابر تنبل:
+  // Greedy vs. Lazy Matching
+  // به صورت پیش‌فرض، عملگرهای تکرار مانند:
+  // +
+  // یا:
+  // *
+  // به شکل حریصانه عمل می‌کنند و تا جای ممکن بیشترین کاراکتر را مطابقت می‌دهند.
+
+  const multipleHeadings = '<h1>Dart</h1><h1>Flutter</h1><h1>Language</h1>';
+
+  // در الگوی حریصانه زیر:
+  final greedyRegex = RegExp(r'<h1>.+</h1>');
+  final greedyMatch = greedyRegex.firstMatch(multipleHeadings);
+  print(greedyMatch?.group(0));
+  // خروجی:
+  // <h1>Dart</h1><h1>Flutter</h1><h1>Language</h1>
+  // همان‌طور که می‌بینید، از اولین:
+  // <h1>
+  // تا آخرین:
+  // </h1>
+  // همگی به عنوان یک تطابق واحد در نظر گرفته شدند.
+
+  // برای تبدیل به تطبیق تنبل یا:
+  // lazy
+  // کافی است یک علامت سوال:
+  // ?
+  // بلافاصله بعد از عملگر تکرار قرار گیرد:
+
+  final lazyRegex = RegExp(r'<h1>(.+?)</h1>');
+  final lazyMatches = lazyRegex.allMatches(multipleHeadings);
+
+  for (final match in lazyMatches) {
+    print(match.group(1));
+  }
+  // خروجی:
+  // Dart
+  // Flutter
+  // Language
+
+  // چالش‌ها:
+  // Challenges
+
+  // چالش ۱: اعتبارسنجی ایمیل:
+  // Challenge 1: Email Validation
+  // نوشتن یک الگوی:
+  // regex
+  // برای بررسی معتبر بودن قالب یک آدرس ایمیل:
+
+  final emailRegex = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  );
+
+  const validEmail = 'test.user@example.com';
+  const invalidEmail = 'test.user@com';
+
+  print(emailRegex.hasMatch(validEmail));
+  // خروجی:
+  // true
+
+  print(emailRegex.hasMatch(invalidEmail));
+  // خروجی:
+  // false
+
+  // چالش ۲: کلمات کارائوکه:
+  // Challenge 2: Karaoke Words
+  // فایل‌های:
+  // LRC
+  // شامل برچسب زمان و متن ترانه هستند.
+  // خط زیر را در نظر بگیرید:
+  const line = '[00:12.34]Row, row, row your boat.';
+
+  // هدف: استخراج دقیقه، ثانیه، صدم ثانیه و متن ترانه و چاپ با قالب زیر:
+  // minutes: 00 seconds: 12 hundredths: 34 lyrics: Row, row, row your boat.
+
+  // حل چالش ۲ با روش ۱ (استفاده از متد substring):
+  final minutes1 = line.substring(1, 3);
+  final seconds1 = line.substring(4, 6);
+  final hundredths1 = line.substring(7, 9);
+  final lyrics1 = line.substring(10);
+
+  print(
+    'minutes: $minutes1 seconds: $seconds1 hundredths: $hundredths1 lyrics: $lyrics1',
+  );
+  // خروجی:
+  // minutes: 00 seconds: 12 hundredths: 34 lyrics: Row, row, row your boat.
+
+  // حل چالش ۲ با روش ۲ (استفاده از گروه‌های RegExp):
+  final lrcRegex = RegExp(r'\[(\d{2}):(\d{2})\.(\d{2})\](.+)');
+  final lrcMatch = lrcRegex.firstMatch(line);
+
+  if (lrcMatch != null) {
+    final minutes2 = lrcMatch.group(1);
+    final seconds2 = lrcMatch.group(2);
+    final hundredths2 = lrcMatch.group(3);
+    final lyrics2 = lrcMatch.group(4);
+
+    print(
+      'minutes: $minutes2 seconds: $seconds2 hundredths: $hundredths2 lyrics: $lyrics2',
+    );
+  }
+  // خروجی:
+  // minutes: 00 seconds: 12 hundredths: 34 lyrics: Row, row, row your boat.
 }
 

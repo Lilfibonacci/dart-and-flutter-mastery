@@ -81,16 +81,14 @@ void main(List<String> args) {
   // به عنوان مثال، اگر در حال ساخت یک ساعت دیجیتال باشید:
 
   // قالب‌بندی زمان - روش اول (رویکرد نادرست):
-  // ویژگی‌های این کلاس کل مدت زمان را تبدیل می‌کنند،
-  // نه فقط باقیمانده را:
-  final time = Duration(hours: 1, minutes: 32, seconds: 10);
+  final time = Duration(hours: 1, minutes: 2, seconds: 3);
   final hours = time.inHours;
   final minutes = time.inMinutes % 60;
   final seconds = time.inSeconds % 60;
   final timeString = "$hours:$minutes:$seconds";
   print(timeString);
   // خروجی غیرمنتظره:
-  // 1:92:5530
+  // 1:2:3
 
   // قالب‌بندی زمان - روش دوم (رویکرد صحیح و حرفه‌ای):
   // ۱. استفاده از عملگر باقیمانده برای دریافت دقیقه و ثانیه بین صفر تا ۵۹.
@@ -106,14 +104,14 @@ void main(List<String> args) {
   // اگر آن را مشخص نکرده بودید،
   // پرکننده به صورت پیش‌فرض کاراکتر فاصله می‌بود:
 
-  final time1 = Duration(hours: 1, minutes: 32, seconds: 10);
+  final time1 = Duration(hours: 1, minutes: 2, seconds: 3);
   final hours1 = time1.inHours;
   final minutes1 = '${time1.inMinutes % 60}'.padLeft(2, '0');
   final seconds1 = '${time1.inSeconds % 60}'.padLeft(2, '0');
   final timeString1 = "$hours1:$minutes1:$seconds1";
   print(timeString1);
   // خروجی صحیح ساعت دیجیتال:
-  // 1:32:10
+  // 1:02:03
 
   // split()
   // تجزیه یک رشته به لیستی از بخش‌ها:
