@@ -58,7 +58,7 @@ flutter-engineering-playbook/
 ## 📈 Progress Tracker
 
 ### Part I: Dart Apprentice — Beyond the Basics (Core Language Mastery)
-- [ ] **Chapter 01:** String Manipulation, `StringBuffer` & Regular Expressions (`RegExp`)
+- [ ✅ ] **Chapter 01:** String Manipulation, `StringBuffer` & Regular Expressions (`RegExp`)
 - [ ] **Chapter 02:** Anonymous Functions, Higher-Order Functions, Tear-offs & Closures
 - [ ] **Chapter 03:** Inheritance vs. Composition (`extends`, `super`, Polymorphism)
 - [ ] **Chapter 04:** Abstract Classes & Contracts
